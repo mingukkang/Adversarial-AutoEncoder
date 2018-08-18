@@ -305,6 +305,8 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 </tr>
 </table>
 
+**6. Conditional Generation**
+
 <table align='center'>
 <tr align='center'>
 <td> Gaussian </td>
