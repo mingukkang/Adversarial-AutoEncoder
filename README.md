@@ -234,7 +234,8 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 ## Reference
 
 ### Paper
-https://arxiv.org/abs/1511.05644
+AAE: https://arxiv.org/abs/1511.05644
+Gan: https://arxiv.org/abs/1406.2661
 
 ### Github
 https://github.com/hwalsuklee/tensorflow-mnist-AAE
