@@ -20,6 +20,6 @@ Supervised AAE
 <img src="Image/Supervised_AAE.png" alt="Drawing" style="width: 10px;"/>
 
 SemiSupervised AAE
-![사진1](https://github.com/MINGUKKANG/CVAE/blob/master/images/CVAE.png = 100)
+![사진1](https://github.com/MINGUKKANG/CVAE/blob/master/images/CVAE.png =100)
 
 ## Code
