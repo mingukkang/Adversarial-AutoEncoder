@@ -26,3 +26,15 @@
 <img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "600px"/>
 
 ## Code
+
+**Supervised Encoder
+```python
+def sup_encoder(self, X, keep_prob): # encoder for supervised AAE
+    
+    with tf.variable_scope("sup_encoder", reuse = tf.AUTO_REUSE):
+        net = drop_out(relu(dense(X, self.super_n_hidden, name = "dense_1")), keep_prob)
+        net = drop_out(relu(dense(net, self.super_n_hidden, name="dense_2")), keep_prob)
+        net = dense(net, self.n_z, name ="dense_3")
+    
+    return net
+```
