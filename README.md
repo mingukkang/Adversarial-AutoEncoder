@@ -21,7 +21,7 @@
 
 ***
 
-### bSemiSupervised AAE
+### SemiSupervised AAE
 
 <img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "600px"/>
 
