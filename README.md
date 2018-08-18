@@ -15,12 +15,12 @@
 
 ## Schematic of CVAE
 
-Supervised AAE
+**Supervised AAE
 
 <img src="Image/Supervised_AAE.png" alt="Drawing" width= "500px"/>
 
-SemiSupervised AAE
+**SemiSupervised AAE
 
-<img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "500px"/>
+<img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "700px"/>
 
 ## Code
