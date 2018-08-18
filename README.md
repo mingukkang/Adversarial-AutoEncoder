@@ -16,7 +16,7 @@
 ## Schematic of CVAE
 
 Supervised AAE
-![사진1](https://github.com/MINGUKKANG/CVAE/blob/master/images/CVAE.png)
+![사진1](https://github.com/MINGUKKANG/Adversarial-AutoEncoder/blob/master/Image/Supervised_AAE.png)
 
 SemiSupervised AAE
 ![사진1](https://github.com/MINGUKKANG/CVAE/blob/master/images/CVAE.png)
