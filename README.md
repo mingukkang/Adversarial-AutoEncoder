@@ -229,3 +229,6 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
     return style, X_generated, negative_loglikelihood, D_loss_y, D_loss_z, G_loss, CE_labels
 ```
 
+## Results
+
+## Reference
