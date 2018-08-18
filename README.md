@@ -1,6 +1,6 @@
 ## Adversarial AutoEncoder(AAE)- Tensorflow
 
-I Write the Tensorflow Code for Supervised AAE and SemiSupervised AAE
+I write the Tensorflow Code for Supervised AAE and SemiSupervised AAE
 
 ## Enviroment
 - OS: Ubuntu 16.04
