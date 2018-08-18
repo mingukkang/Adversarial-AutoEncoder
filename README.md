@@ -16,7 +16,7 @@
 ## Schematic of CVAE
 
 Supervised AAE
-<img src="Image/Supervised_AAE.png" alt="Drawing" style="width: 200px;"/>
+<img src="Image/Supervised_AAE.png" alt="Drawing" style="width: 100px;"/>
 
 SemiSupervised AAE
 ![사진1](https://github.com/MINGUKKANG/CVAE/blob/master/images/CVAE.png)
