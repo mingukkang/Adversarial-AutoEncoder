@@ -235,6 +235,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 
 ### Paper
 AAE: https://arxiv.org/abs/1511.05644
+
 Gan: https://arxiv.org/abs/1406.2661
 
 ### Github
