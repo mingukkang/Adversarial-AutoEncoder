@@ -23,7 +23,7 @@ I write the Tensorflow Code for Supervised AAE and SemiSupervised AAE
 
 ### SemiSupervised AAE
 
-<img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "600px"/>
+<img src="Image/Semisupervised_AAE_.png" alt="Drawing" width= "600px"/>
 
 ## Code
 
