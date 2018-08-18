@@ -238,6 +238,4 @@ https://arxiv.org/abs/1511.05644
 
 ### Github
 https://github.com/hwalsuklee/tensorflow-mnist-AAE
-
-### Site
-https://towardsdatascience.com/a-wizards-guide-to-adversarial-autoencoders-part-2-exploring-latent-space-with-adversarial-2d53a6f8a4f9
+https://github.com/MINGUKKANG/CVAE
