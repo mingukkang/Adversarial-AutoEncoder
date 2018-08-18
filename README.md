@@ -13,7 +13,7 @@
 
 - OpenCV 3.4.1
 
-## Schematic of CVAE
+## Schematic of AAE
 
 **Supervised AAE**
 
