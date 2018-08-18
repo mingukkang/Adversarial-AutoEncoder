@@ -19,6 +19,8 @@
 
 <img src="Image/Supervised_AAE.png" alt="Drawing" width= "500px"/>
 
+***
+
 **SemiSupervised AAE**
 
 <img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "600px"/>
