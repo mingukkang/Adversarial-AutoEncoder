@@ -15,13 +15,13 @@
 
 ## Schematic of AAE
 
-**Supervised AAE**
+### Supervised AAE
 
 <img src="Image/Supervised_AAE.png" alt="Drawing" width= "500px"/>
 
 ***
 
-**SemiSupervised AAE**
+### bSemiSupervised AAE
 
 <img src="Image/Semisupervised_AAE.png" alt="Drawing" width= "600px"/>
 
