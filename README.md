@@ -240,9 +240,9 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 <td> Swiss Roll </td>
 </tr>
 <tr>
-<td><img src = 'images/ori_input_images.png' height = '250px'>
-<td><img src = 'images/input_image_noised.png' height = '250px'>
-<td><img src = 'images/Manifold_canvas_75.png' height = '250px'>
+<td><img src = 'images/Gaussian.png' height = '250px'>
+<td><img src = 'Image/Gaussian_mixture.png' height = '250px'>
+<td><img src = 'Image/Swiss_roll.png' height = '250px'>
 </tr>
 </table>
 
