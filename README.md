@@ -323,9 +323,9 @@ Test was performed using 10,000 number of test dataset not used for learning.
 <td> Manifold with a condition of 2 </td>
 </tr>
 <tr>
-<td><img src = 'Image/label0.png' height = '250px'>
-<td><img src = 'Image/label1.png' height = '250px'>
-<td><img src = 'Image/label2.png' height = '250px'>
+<td><img src = 'Image/labels0.png' height = '250px'>
+<td><img src = 'Image/labels1.png' height = '250px'>
+<td><img src = 'Image/labels2.png' height = '250px'>
 </tr>
 </table>
 
