@@ -246,7 +246,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 </tr>
 </table>
 
-**2. 2D MNIST Manifold**
+**2. 2D Latent Space**
 
 ***Target***
 
@@ -264,6 +264,9 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 </table>
 
 ***Coding Space of Supervised AAE***
+```
+Test was performed using 10,000 number of test dataset not used for learning.
+```
 
 <table align='center'>
 <tr align='center'>
