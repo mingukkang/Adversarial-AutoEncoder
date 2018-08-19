@@ -73,7 +73,7 @@ def Sup_Adversarial_AutoEncoder(self, X, X_noised, Y, keep_prob):
     z_generated = self.sup_encoder(X_flatten_noised, keep_prob)
     X_generated = self.sup_decoder(z_generated, keep_prob)
 
-    negative_log_likelihood = tf.reduce_mean(tf.square(X_generated - X_flatten))*0.5
+    negative_log_likelihood = tf.reduce_mean(tf.squared_difference(X_generated, X_flatten))
 
     if self.prior is "gaussian":
         z_prior, z_id = gaussian(self.batch_size,
@@ -110,7 +110,7 @@ def Sup_Adversarial_AutoEncoder(self, X, X_noised, Y, keep_prob):
 
     G_loss = tf.nn.sigmoid_cross_entropy_with_logits(logits = D_fake_logits, labels = tf.ones_like(D_fake_logits))
 
-    D_loss = tf.reduce_mean(D_loss_fake + D_loss_true)
+    D_loss = tf.reduce_mean(D_loss_fake) + tf.reduce_mean(D_loss_true)
     G_loss = tf.reduce_mean(G_loss)
 
     return z_generated, X_generated, negative_log_likelihood, D_loss, G_loss
@@ -179,7 +179,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
     X_noised_flatten = tf.reshape(X_noised, [-1, self.length])
 
     style, labels_softmax = self.semi_encoder(X_noised_flatten, keep_prob, semi_supervised = False)
-    latent_inputs = tf.concat([labels_softmax, style], axis = 1)
+    latent_inputs = tf.concat([style , labels_softmax], axis = 1)
     X_generated = self.semi_decoder(latent_inputs, keep_prob)
 
     if self.prior is "gaussian":
@@ -208,19 +208,19 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
     D_Z_fake = self.semi_z_discriminator(style, keep_prob)
     D_Z_real = self.semi_z_discriminator(tf.convert_to_tensor(z_prior), keep_prob)
 
-    negative_loglikelihood = 0.5* tf.reduce_mean(tf.square(X_generated - X_flatten))
+    negative_loglikelihood = tf.reduce_mean(tf.squared_difference(X_generated, X_flatten))
 
     D_loss_y_real = tf.nn.sigmoid_cross_entropy_with_logits(logits=D_Y_real, labels=tf.ones_like(D_Y_real))
     D_loss_y_fake = tf.nn.sigmoid_cross_entropy_with_logits(logits=D_Y_fake, labels=tf.zeros_like(D_Y_fake))
-    D_loss_y = tf.reduce_mean(D_loss_y_real + D_loss_y_fake)
+    D_loss_y = tf.reduce_mean(D_loss_y_real) + tf.reduce_mean(D_loss_y_fake)
     D_loss_z_real = tf.nn.sigmoid_cross_entropy_with_logits(logits = D_Z_real, labels = tf.ones_like(D_Z_real))
     D_loss_z_fake = tf.nn.sigmoid_cross_entropy_with_logits(logits = D_Z_fake, labels = tf.zeros_like(D_Z_fake))
-    D_loss_z = tf.reduce_mean(D_loss_z_real + D_loss_z_fake)
+    D_loss_z = tf.reduce_mean(D_loss_z_real) + tf.reduce_mean(D_loss_z_fake)
 
 
     G_loss_y = tf.nn.sigmoid_cross_entropy_with_logits(logits=D_Y_fake, labels=tf.ones_like(D_Y_fake))
     G_loss_z = tf.nn.sigmoid_cross_entropy_with_logits(logits = D_Z_fake, labels = tf.ones_like(D_Z_fake))
-    G_loss = tf.reduce_mean(G_loss_y + G_loss_z)
+    G_loss = tf.reduce_mean(G_loss_y) + tf.reduce_mean(G_loss_z)
 
     CE_labels = tf.nn.softmax_cross_entropy_with_logits(logits = labels_generated, labels = labels)
     CE_labels = tf.reduce_mean(CE_labels)
