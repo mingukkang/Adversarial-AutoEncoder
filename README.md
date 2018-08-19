@@ -231,7 +231,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 
 ## Results
 
-**1. Denosing and Restoring
+**1. Denosing and Restoring**
 
 <table align='center'>
 <tr align='center'>
@@ -279,23 +279,9 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 </table>
 
 
-**3. Coding Space of SemiSupervised AAE**
+**3. Manifold Learning Result**
 
-
-<table align='center'>
-<tr align='center'>
-<td> Gaussian </td>
-<td> Gaussian Mixture </td>
-<td> Swiss Roll </td>
-</tr>
-<tr>
-<td><img src = 'images/ori_input_images.png' height = '250px'>
-<td><img src = 'images/input_image_noised.png' height = '250px'>
-<td><img src = 'images/Manifold_canvas_75.png' height = '250px'>
-</tr>
-</table>
-
-**4. Reconstruction Result**
+***Supervised AAE***
 
 <table align='center'>
 <tr align='center'>
@@ -310,20 +296,22 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 </tr>
 </table>
 
-**5. Manifold Learning Result**
+***SemiSupervised AAE***
 
 <table align='center'>
 <tr align='center'>
 <td> Gaussian </td>
 <td> Gaussian Mixture </td>
+<td> Swiss Roll </td>
 </tr>
 <tr>
 <td><img src = 'images/ori_input_images.png' height = '250px'>
 <td><img src = 'images/input_image_noised.png' height = '250px'>
+<td><img src = 'images/Manifold_canvas_75.png' height = '250px'>
 </tr>
 </table>
 
-**6. Conditional Generation**
+**4. Conditional Genration**
 
 <table align='center'>
 <tr align='center'>
