@@ -231,6 +231,21 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 
 ## Results
 
+**1. Denosing and Restoring
+
+<table align='center'>
+<tr align='center'>
+<td> Original Images </td>
+<td> Images Denoised </td>
+<td> Images Restored via supervised AAE </td>
+</tr>
+<tr>
+<td><img src = 'images/Gaussian.png' height = '250px'>
+<td><img src = 'Image/Gaussian_mixture.png' height = '250px'>
+<td><img src = 'Image/Swiss_roll.png' height = '250px'>
+</tr>
+</table>
+
 **1. Target Distribution**
 
 <table align='center'>
