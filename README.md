@@ -236,17 +236,19 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 <table align='center'>
 <tr align='center'>
 <td> Original Images </td>
-<td> Images Denoised </td>
-<td> Images Restored via supervised AAE </td>
+<td> Restored via Supervised AAE </td>
+<td> Restored via Semisupervised AAE </td>
 </tr>
 <tr>
-<td><img src = 'images/Gaussian.png' height = '250px'>
-<td><img src = 'Image/Gaussian_mixture.png' height = '250px'>
-<td><img src = 'Image/Swiss_roll.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
 </tr>
 </table>
 
-**1. Target Distribution**
+**2. 2D MNIST Manifold**
+
+***Target***
 
 <table align='center'>
 <tr align='center'>
@@ -255,13 +257,13 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 <td> Swiss Roll </td>
 </tr>
 <tr>
-<td><img src = 'images/Gaussian.png' height = '250px'>
-<td><img src = 'Image/Gaussian_mixture.png' height = '250px'>
-<td><img src = 'Image/Swiss_roll.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
 </tr>
 </table>
 
-**2. Coding Space of Supervised AAE**
+***Coding Space of Supervised AAE***
 
 <table align='center'>
 <tr align='center'>
@@ -270,11 +272,12 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 <td> Swiss Roll </td>
 </tr>
 <tr>
-<td><img src = 'images/ori_input_images.png' height = '250px'>
-<td><img src = 'images/input_image_noised.png' height = '250px'>
-<td><img src = 'images/Manifold_canvas_75.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
+<td><img src = '.png' height = '250px'>
 </tr>
 </table>
+
 
 **3. Coding Space of SemiSupervised AAE**
 
