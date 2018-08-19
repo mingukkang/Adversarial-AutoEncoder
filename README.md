@@ -231,7 +231,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 
 ## Results
 
-**1. Denosing and Restoring**
+**1. Restoring**
 
 <table align='center'>
 <tr align='center'>
@@ -257,7 +257,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 <td> Swiss Roll </td>
 </tr>
 <tr>
-<td><img src = '.png' height = '250px'>
+<td><img src = 'Image/Gaussian.png' height = '250px'>
 <td><img src = 'Image/Gaussian_mixture_.png' height = '250px'>
 <td><img src = 'Image/Swiss_roll_.png' height = '250px'>
 </tr>
