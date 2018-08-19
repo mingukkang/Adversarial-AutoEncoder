@@ -241,7 +241,7 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_pro
 </tr>
 <tr>
 <td><img src = 'Image/Original_image.png' height = '250px'>
-<td><img src = 'Image/.png' height = '250px'>
+<td><img src = 'Image/Supervised_AAE_.png' height = '250px'>
 <td><img src = 'Image/Restored_Semi_AAE.png' height = '250px'>
 </tr>
 </table>
