@@ -410,6 +410,3 @@ elif conf.mode is "semi_supervised":
             MLR = np.reshape(MLR, [-1, height, width, channel])
             p_name = "PMLR/labels" +str(k)
             plot_manifold_canvas(MLR, 10, "MNIST", p_name)
-
-if __name__ =='__main__':
-    tf.app.run()
