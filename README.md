@@ -190,11 +190,11 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, z_prior,
 
 **1. Restoring**
 ```
-python main.py --mode "supervised"
+python main.py --mode "supervised" --n_z 20
 
 or
 
-python main.py --mode "semi_supervised"
+python main.py --mode "semi_supervised" --n_z 20
 
 ```
 <table align='center'>
