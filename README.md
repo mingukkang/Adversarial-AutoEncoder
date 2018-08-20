@@ -230,6 +230,8 @@ python main.py --mode "semi_supervised"
 ***Coding Space of Supervised AAE***
 ```
 Test was performed using 10,000 number of test dataset not used for learning.
+
+python main.py --mode "supervised"
 ```
 
 <table align='center'>
@@ -247,7 +249,9 @@ Test was performed using 10,000 number of test dataset not used for learning.
 
 
 **3. Manifold Learning Result**
-
+```
+python main.py --mode "supervised" --PMLR True
+```
 ***Supervised AAE***
 
 <table align='center'>
@@ -263,6 +267,9 @@ Test was performed using 10,000 number of test dataset not used for learning.
 </tr>
 </table>
 
+```
+python main.py --mode "semi_supervised" --PMLR True
+```
 ***SemiSupervised AAE***
 
 <table align='center'>
@@ -279,6 +286,10 @@ Test was performed using 10,000 number of test dataset not used for learning.
 </table>
 
 **4. Conditional Genration**
+
+```
+python main.py --mode "semi_supervised" --PARR True
+```
 
 <table align='center'>
 <tr align='center'>
