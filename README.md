@@ -190,11 +190,11 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, z_prior,
 
 **1. Restoring**
 ```
-python main.py --mode "supervised" --n_z 20
+python main.py --mode "supervised" --prior "gaussian" --n_z 20
 
 or
 
-python main.py --mode "semi_supervised" --n_z 20
+python main.py --mode "semi_supervised" --prior "gaussian" --n_z 20
 
 ```
 <table align='center'>
@@ -231,7 +231,7 @@ python main.py --mode "semi_supervised" --n_z 20
 ```
 Test was performed using 10,000 number of test dataset not used for learning.
 
-python main.py --mode "supervised" --prior "gaussian_mixture"
+python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2
 ```
 
 <table align='center'>
@@ -250,7 +250,7 @@ python main.py --mode "supervised" --prior "gaussian_mixture"
 
 **3. Manifold Learning Result**
 ```
-python main.py --mode "supervised" --PMLR True
+python main.py --mode "supervised" --prior "gaussian" --n_z 2 --PMLR True
 ```
 ***Supervised AAE***
 
@@ -264,7 +264,7 @@ python main.py --mode "supervised" --PMLR True
 </table>
 
 ```
-python main.py --mode "semi_supervised" --PMLR True
+python main.py --mode "semi_supervised" --prior "gaussian" --n_z 2 --PMLR True
 ```
 ***SemiSupervised AAE***
 
@@ -284,7 +284,7 @@ python main.py --mode "semi_supervised" --PMLR True
 **4. Conditional Genration**
 
 ```
-python main.py --mode "semi_supervised" --PARR True
+python main.py --mode "semi_supervised" --prior "gaussian" --n_z 20 --PARR True
 ```
 
 <table align='center'>
