@@ -250,7 +250,7 @@ python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2
 
 **3. Manifold Learning Result**
 ```
-python main.py --mode "supervised" --prior "gaussian" --n_z 2 --PMLR True
+python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2 --PMLR True
 ```
 ***Supervised AAE***
 
@@ -259,7 +259,7 @@ python main.py --mode "supervised" --prior "gaussian" --n_z 2 --PMLR True
 <td> Manifold </td>
 </tr>
 <tr>
-<td><img src = 'Image/.png' height = '250px'>
+<td><img src = 'Image/PMLR_.png' height = '250px'>
 </tr>
 </table>
 
@@ -278,9 +278,9 @@ The results suggest that when n_z is 2, SemiSupervised AAE can't extract label i
 <td> Manifold with a condition 2 </td>
 </tr>
 <tr>
-<td><img src = 'Image/Manifold_0.png' height = '250px'>
-<td><img src = 'Image/Manifold_1.png' height = '250px'>
-<td><img src = 'Image/Manifold_2.png' height = '250px'>
+<td><img src = 'Image/labels_0.png' height = '250px'>
+<td><img src = 'Image/labels_1.png' height = '250px'>
+<td><img src = 'Image/labels_2.png' height = '250px'>
 </tr>
 </table>
 
