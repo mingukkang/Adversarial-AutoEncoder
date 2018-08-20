@@ -248,10 +248,12 @@ python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2
 
 
 **3. Manifold Learning Result**
+
+***Supervised AAE***
+
 ```
 python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2 --PMLR True
 ```
-***Supervised AAE***
 
 <table align='center'>
 <tr align='center'>
@@ -262,13 +264,14 @@ python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2 --PMLR Tru
 </tr>
 </table>
 
+***SemiSupervised AAE***
+
 ```
 python main.py --mode "semi_supervised" --prior "gaussian" --n_z 2 --PMLR True
 
 <My own opinion>
 The results suggest that when n_z is 2, SemiSupervised AAE can't extract label information from Input image very well.
 ```
-***SemiSupervised AAE***
 
 <table align='center'>
 <tr align='center'>
