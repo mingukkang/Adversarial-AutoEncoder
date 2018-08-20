@@ -256,14 +256,10 @@ python main.py --mode "supervised" --PMLR True
 
 <table align='center'>
 <tr align='center'>
-<td> Gaussian </td>
-<td> Gaussian Mixture </td>
-<td> Swiss Roll </td>
+<td> Manifold </td>
 </tr>
 <tr>
-<td><img src = 'images/ori_input_images.png' height = '250px'>
-<td><img src = 'images/input_image_noised.png' height = '250px'>
-<td><img src = 'images/Manifold_canvas_75.png' height = '250px'>
+<td><img src = 'Image/.png' height = '250px'>
 </tr>
 </table>
 
@@ -274,14 +270,14 @@ python main.py --mode "semi_supervised" --PMLR True
 
 <table align='center'>
 <tr align='center'>
-<td> Gaussian </td>
-<td> Gaussian Mixture </td>
-<td> Swiss Roll </td>
+<td> Manifold with a condition 0 </td>
+<td> Manifold with a condition 1 </td>
+<td> Manifold with a condition 2 </td>
 </tr>
 <tr>
-<td><img src = 'images/ori_input_images.png' height = '250px'>
-<td><img src = 'images/input_image_noised.png' height = '250px'>
-<td><img src = 'images/Manifold_canvas_75.png' height = '250px'>
+<td><img src = 'Image/.png' height = '250px'>
+<td><img src = 'Image/.png' height = '250px'>
+<td><img src = 'Image/.png' height = '250px'>
 </tr>
 </table>
 
@@ -293,14 +289,10 @@ python main.py --mode "semi_supervised" --PARR True
 
 <table align='center'>
 <tr align='center'>
-<td> Manifold with a condition of 0 </td>
-<td> Manifold with a condition of 1 </td>
-<td> Manifold with a condition of 2 </td>
+<td> Analogical reasoning with random z_vectors </td>
 </tr>
 <tr>
-<td><img src = 'Image/labels0.png' height = '250px'>
-<td><img src = 'Image/labels1.png' height = '250px'>
-<td><img src = 'Image/labels2.png' height = '250px'>
+<td><img src = 'Image/.png' height = '250px'>
 </tr>
 </table>
 
