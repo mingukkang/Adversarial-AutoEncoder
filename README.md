@@ -275,9 +275,9 @@ python main.py --mode "semi_supervised" --prior "gaussian" --n_z 2 --PMLR True
 <td> Manifold with a condition 2 </td>
 </tr>
 <tr>
-<td><img src = 'Image/.png' height = '250px'>
-<td><img src = 'Image/.png' height = '250px'>
-<td><img src = 'Image/.png' height = '250px'>
+<td><img src = 'Image/Manifold_0.png' height = '250px'>
+<td><img src = 'Image/Manifold_1.png' height = '250px'>
+<td><img src = 'Image/Manifold_2.png' height = '250px'>
 </tr>
 </table>
 
