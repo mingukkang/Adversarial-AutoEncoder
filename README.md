@@ -195,7 +195,6 @@ python main.py --mode "supervised" --prior "gaussian" --n_z 20
 or
 
 python main.py --mode "semi_supervised" --prior "gaussian" --n_z 20
-
 ```
 <table align='center'>
 <tr align='center'>
