@@ -267,7 +267,7 @@ python main.py --mode "supervised" --prior "gaussian" --n_z 2 --PMLR True
 python main.py --mode "semi_supervised" --prior "gaussian" --n_z 2 --PMLR True
 
 <My own opinion>
-The results suggest that SemiSupervised AAE can't extract label information from Input image very well.
+The results suggest that when n_z is 2, SemiSupervised AAE can't extract label information from Input image very well.
 ```
 ***SemiSupervised AAE***
 
