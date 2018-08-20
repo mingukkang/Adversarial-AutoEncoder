@@ -231,7 +231,7 @@ python main.py --mode "semi_supervised" --n_z 20
 ```
 Test was performed using 10,000 number of test dataset not used for learning.
 
-python main.py --mode "supervised"
+python main.py --mode "supervised" --prior "gaussian_mixture"
 ```
 
 <table align='center'>
