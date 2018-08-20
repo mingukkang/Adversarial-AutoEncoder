@@ -241,9 +241,9 @@ python main.py --mode "supervised" --prior "gaussian_mixture"
 <td> Swiss Roll </td>
 </tr>
 <tr>
-<td><img src = 'Image/Gaussian_generated.png' height = '250px'>
-<td><img src = 'Image/Gaussian_Mixture_generated.png' height = '250px'>
-<td><img src = 'Image/Swiss_roll_generated.png' height = '250px'>
+<td><img src = 'Image/G_generated.png' height = '250px'>
+<td><img src = 'Image/GM_generated.png' height = '250px'>
+<td><img src = 'Image/S_R_generated.png' height = '250px'>
 </tr>
 </table>
 
