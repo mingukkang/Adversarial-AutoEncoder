@@ -46,7 +46,7 @@ class AAE:
 
         return logits
 
-    def Sup_Adversarial_AutoEncoder(self, X, X_noised, Y, keep_prob):
+    def Sup_Adversarial_AutoEncoder(self, X, X_noised, Y, z_prior, z_id, keep_prob):
 
         X_flatten = tf.reshape(X, [-1, self.length])
         X_flatten_noised = tf.reshape(X_noised, [-1, self.length])
@@ -56,32 +56,7 @@ class AAE:
 
         negative_log_likelihood = tf.reduce_mean(tf.squared_difference(X_generated, X_flatten))
 
-        if self.prior is "gaussian":
-            z_prior, z_id = gaussian(self.batch_size,
-                                     n_labels = self.n_labels,
-                                     n_dim = self.n_z,
-                                     use_label_info = True)
-            z_id_onehot = np.eye(self.n_labels)[z_id].astype(np.float32)
-
-        elif self.prior is "gaussian_mixture":
-            z_id = np.random.randint(0, self.n_labels, size=[self.batch_size])
-            z_id_onehot = np.eye(self.n_labels)[z_id].astype(np.float32)
-            z_prior = gaussian_mixture(self.batch_size,
-                                       n_labels = self.n_labels,
-                                       n_dim = self.n_z,
-                                       label_indices = z_id)
-
-        elif self.prior is "swiss_roll":
-            z_id = np.random.randint(0, self.n_labels, size=[self.batch_size])
-            z_id_onehot = np.eye(self.n_labels)[z_id].astype(np.float32)
-            z_prior = swiss_roll(self.batch_size,
-                                 n_labels = self.n_labels,
-                                 n_dim = self.n_z,
-                                 label_indices = z_id)
-        else:
-            print("FLAGS.prior should be [gaussian, gaussian_mixture, swiss_roll]")
-
-        z_prior = tf.concat([z_prior, z_id_onehot], axis = 1)
+        z_prior = tf.concat([z_prior, z_id], axis = 1)
         z_fake = tf.concat([z_generated, Y], axis = 1)
         D_real_logits = self.discriminator(z_prior, keep_prob)
         D_fake_logits = self.discriminator(z_fake, keep_prob)
@@ -137,7 +112,7 @@ class AAE:
 
         return logits
 
-    def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, keep_prob):
+    def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, z_prior, keep_prob):
 
         X_flatten = tf.reshape(X, [-1 , self.length])
         X_noised_flatten = tf.reshape(X_noised, [-1, self.length])
@@ -146,31 +121,13 @@ class AAE:
         latent_inputs = tf.concat([style, labels_softmax], axis = 1)
         X_generated = self.semi_decoder(latent_inputs, keep_prob)
 
-        if self.prior is "gaussian":
-            z_prior = gaussian(self.batch_size,
-                               n_labels = self.n_labels,
-                               n_dim = self.n_z,
-                               use_label_info = False)
-
-        elif self.prior is "gaussian_mixture":
-            z_prior = gaussian_mixture(self.batch_size,
-                                       n_labels = self.n_labels,
-                                       n_dim = self.n_z)
-
-        elif self.prior is "swiss_roll":
-            z_prior = swiss_roll(self.batch_size,
-                                 n_labels = self.n_labels,
-                                 n_dim = self.n_z)
-        else:
-            print("FLAGS.prior should be [gaussian, gaussian_mixture, swiss_roll]")
-
         _, labels_generated = self.semi_encoder(X_noised_flatten, keep_prob, semi_supervised = True)
 
         D_Y_fake = self.semi_y_discriminator(labels_softmax, keep_prob)
         D_Y_real = self.semi_y_discriminator(labels_cat, keep_prob)
 
         D_Z_fake = self.semi_z_discriminator(style, keep_prob)
-        D_Z_real = self.semi_z_discriminator(tf.convert_to_tensor(z_prior), keep_prob)
+        D_Z_real = self.semi_z_discriminator(z_prior, keep_prob)
 
         negative_loglikelihood = tf.reduce_mean(tf.squared_difference(X_generated,X_flatten))
 
@@ -191,8 +148,3 @@ class AAE:
 
 
         return style, X_generated, negative_loglikelihood, D_loss_y, D_loss_z, G_loss, CE_labels
-
-    def optim_op(self, loss ,learning_rate, global_step, var_list):
-        optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).\
-            minimize(loss, global_step = global_step, var_list = var_list)
-        return optimizer

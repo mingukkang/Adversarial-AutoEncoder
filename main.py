@@ -12,17 +12,19 @@ flags.DEFINE_string("data", "MNIST", "[MNIST | CIFAR_10]")
 flags.DEFINE_string("prior", "gaussian", "[gaussain | gaussain_mixture | swiss_roll]")
 
 
-flags.DEFINE_integer("super_n_hidden", 1000, "the number of elements for hidden layers")
-flags.DEFINE_integer("semi_n_hidden", 1000, "teh number of elements for hidden layers")
+flags.DEFINE_integer("super_n_hidden", 3000, "the number of elements for hidden layers")
+flags.DEFINE_integer("semi_n_hidden", 3000, "teh number of elements for hidden layers")
 flags.DEFINE_integer("n_epoch", 150, "number of Epoch for training")
 flags.DEFINE_integer("n_z", 2, "Dimension of Latent variables")
-flags.DEFINE_integer("num_samples",10000, "number of samples for semi supervised learning")
+flags.DEFINE_integer("num_samples",5000, "number of samples for semi supervised learning")
 flags.DEFINE_integer("batch_size", 128, "Batch Size for training")
 
-flags.DEFINE_float("lr_AE", 0.001, "learning rate for Reconstruction phase")
-flags.DEFINE_float("lr_D_G", 0.001, "learning rate for Regularization phase")
 flags.DEFINE_float("keep_prob", 0.9, "dropout rate")
+flags.DEFINE_float("lr_start", 0.001, "initial learning rate")
+flags.DEFINE_float("lr_mid", 0.0005, "mid learning rate")
+flags.DEFINE_float("lr_end", 0.0001, "final learning rate")
 
+flags.DEFINE_bool("noised", True, "")
 flags.DEFINE_bool("PMLR", True, "Boolean for plot manifold learning result")
 flags.DEFINE_bool("PARR", True, "Boolean for plot analogical reasoning result")
 
@@ -37,16 +39,24 @@ if conf.mode is "supervised":
     _, height, width, channel = np.shape(train_xs)
     n_cls = np.shape(train_ys)[1]
 
-    X = tf.placeholder(dtype=tf.float32, shape=[None, height, width, channel], name="Input")
-    X_noised = tf.placeholder(dtype=tf.float32, shape=[None, height, width, channel], name="Input_noised")
-    Y = tf.placeholder(dtype=tf.float32, shape=[None, n_cls], name="labels")
+    X = tf.placeholder(dtype=tf.float32, shape=[None, height, width, channel], name="Inputs")
+    X_noised = tf.placeholder(dtype=tf.float32, shape=[None, height, width, channel], name="Inputs_noised")
+    Y = tf.placeholder(dtype=tf.float32, shape=[None, n_cls], name="Input_labels")
+    z_prior = tf.placeholder(tf.float32, shape=[None, conf.n_z], name="z_prior")
+    z_id = tf.placeholder(tf.float32, shape = [None, n_cls], name = "prior_labels")
+    latent = tf.placeholder(tf.float32, shape = [None, conf.n_z], name = "latent_for_generation")
     keep_prob = tf.placeholder(dtype = tf.float32, name = "dropout_rate")
+    lr_ = tf.placeholder(dtype = tf.float32, name = "learning_rate")
     global_step = tf.Variable(0, trainable=False)
-    z_inputs = tf.placeholder(tf.float32, shape = [None, conf.n_z], name = "latent_input")
 
     AAE = AAE(conf, [_, height, width, channel], n_cls)
-    z_generated, X_generated, negative_log_likelihood, D_loss, G_loss = AAE.Sup_Adversarial_AutoEncoder(X, X_noised, Y, keep_prob)
-    images_PMLR = AAE.sup_decoder(z_inputs, keep_prob)
+    z_generated, X_generated, negative_log_likelihood, D_loss, G_loss = AAE.Sup_Adversarial_AutoEncoder(X,
+                                                                                                        X_noised,
+                                                                                                        Y,
+                                                                                                        z_prior,
+                                                                                                        z_id,
+                                                                                                        keep_prob)
+    images_PMLR = AAE.sup_decoder(latent, keep_prob)
     total_batch = data_pipeline.get_total_batch(train_xs, conf.batch_size)
 
     total_vars = tf.trainable_variables()
@@ -54,11 +64,18 @@ if conf.mode is "supervised":
     var_generator = [var for var in total_vars if "encoder" in var.name]
     var_discriminator = [var for var in total_vars if "discriminator" in var.name]
 
-    op_AE = AAE.optim_op(negative_log_likelihood, conf.lr_AE, global_step, var_AE)
-    op_D = AAE.optim_op(D_loss, conf.lr_D_G/5, global_step, var_discriminator)
-    op_G = AAE.optim_op(G_loss, conf.lr_D_G, global_step, var_generator)
+    op_AE = tf.train.AdamOptimizer(learning_rate = lr_).minimize(negative_log_likelihood,
+                                                                global_step = global_step,
+                                                                var_list = var_AE)
 
-    batch_t_xs, batch_tn_xs, batch_t_ys = data_pipeline.next_batch(test_xs, test_ys, 100, make_noise= False)
+    op_D = tf.train.AdamOptimizer(learning_rate = lr_/5). minimize(D_loss,
+                                                                global_step = global_step,
+                                                                var_list = var_discriminator)
+    op_G = tf.train.AdamOptimizer(learning_rate = lr_).minimize(G_loss,
+                                                               global_step = global_step,
+                                                               var_list = var_generator)
+
+    batch_t_xs, batch_tn_xs, batch_t_ys = data_pipeline.next_batch(valid_xs, valid_ys, 100, make_noise= False)
     data_pipeline.initialize_batch()
 
     sess = tf.Session()
@@ -73,8 +90,46 @@ if conf.mode is "supervised":
             batch_xs, batch_noised_xs, batch_ys = data_pipeline.next_batch(train_xs,
                                                                            train_ys,
                                                                            conf.batch_size,
-                                                                           make_noise=True)
-            feed_dict = {X: batch_xs, X_noised: batch_noised_xs, Y: batch_ys, keep_prob: conf.keep_prob}
+                                                                           make_noise=conf.noised)
+            if conf.prior is "gaussian":
+                z_prior_, z_id_ = gaussian(conf.batch_size,
+                                         n_labels = n_cls,
+                                         n_dim = conf.n_z,
+                                         use_label_info = True)
+                z_id_onehot = np.eye(n_cls)[z_id_].astype(np.float32)
+
+            elif conf.prior is "gaussian_mixture":
+                z_id_ = np.random.randint(0, n_cls, size=[conf.batch_size])
+                z_id_onehot = np.eye(n_cls)[z_id_].astype(np.float32)
+                z_prior_ = gaussian_mixture(conf.batch_size,
+                                           n_labels = n_cls,
+                                           n_dim = conf.n_z,
+                                           label_indices = z_id_)
+
+            elif conf.prior is "swiss_roll":
+                z_id_ = np.random.randint(0, n_cls, size=[conf.batch_size])
+                z_id_onehot = np.eye(n_cls)[z_id_].astype(np.float32)
+                z_prior_ = swiss_roll(conf.batch_size,
+                                     n_labels = n_cls,
+                                     n_dim = conf.n_z,
+                                     label_indices = z_id_)
+            else:
+                print("FLAGS.prior should be [gaussian, gaussian_mixture, swiss_roll]")
+
+            if i <= 50:
+                lr_value = conf.lr_start
+            elif i <=100:
+                lr_value = conf.lr_mid
+            else:
+                lr_value = conf.lr_end
+
+            feed_dict = {X: batch_xs,
+                         X_noised: batch_noised_xs,
+                         Y: batch_ys,
+                         z_prior: z_prior_,
+                         z_id: z_id_onehot,
+                         lr_: lr_value,
+                         keep_prob: conf.keep_prob}
 
             # AutoEncoder phase
             l, _, g = sess.run([negative_log_likelihood, op_AE, global_step], feed_dict=feed_dict)
@@ -82,9 +137,7 @@ if conf.mode is "supervised":
             # Discriminator phase
             l_D, _ = sess.run([D_loss, op_D], feed_dict = feed_dict)
 
-            for k in range(2):
-                # Generator phase
-                l_G, _ = sess.run([G_loss, op_G], feed_dict = feed_dict)
+            l_G, _ = sess.run([G_loss, op_G], feed_dict = feed_dict)
 
             likelihood += l/total_batch
             D_value += l_D/total_batch
@@ -102,42 +155,43 @@ if conf.mode is "supervised":
         hour = int((time.time() - start_time) / 3600)
         min = int(((time.time() - start_time) - 3600 * hour) / 60)
         sec = int((time.time() - start_time) - 3600 * hour - 60 * min)
-        print("Epoch: %3d   lr_AE: %.5f   loss_AE: %.4f   Time: %d hour %d min %d sec" % (i, conf.lr_AE, likelihood, hour, min, sec))
-        print("Epoch: %3d   lr_DG: %.5f   loss_D : %.4f   loss_G: %.4f\n"  % (i, conf.lr_D_G, D_value, G_value))
+        print("Epoch: %3d   lr_AE: %.5f   loss_AE: %.4f   Time: %d hour %d min %d sec" % (i, lr_value, likelihood, hour, min, sec))
+        print("             lr_D: %.5f   loss_D: %.4f"  % (lr_value/5, D_value))
+        print("             lr_G: %.5f   loss_G: %.4f\n" % (lr_value, G_value))
 
     ## code for 2D scatter plot
-        if conf.n_z == 2:
-            print("-" * 80)
-            print("plot 2D Scatter Result")
-            test_total_batch = data_pipeline.get_total_batch(test_xs, 128)
-            data_pipeline.initialize_batch()
-            latent_holder = []
-            for i in range(test_total_batch):
-                batch_test_xs, batch_test_noised_xs, batch_test_ys = data_pipeline.next_batch(test_xs,
-                                                                                              test_ys,
-                                                                                              conf.batch_size,
-                                                                                              make_noise=False)
-                feed_dict = {X: batch_test_xs,
-                             X_noised: batch_test_noised_xs,
-                             Y: batch_test_ys,
-                             keep_prob: 1.0}
+    if conf.n_z == 2:
+        print("-" * 80)
+        print("plot 2D Scatter Result")
+        test_total_batch = data_pipeline.get_total_batch(test_xs, 128)
+        data_pipeline.initialize_batch()
+        latent_holder = []
+        for i in range(test_total_batch):
+            batch_test_xs, batch_test_noised_xs, batch_test_ys = data_pipeline.next_batch(test_xs,
+                                                                                          test_ys,
+                                                                                          conf.batch_size,
+                                                                                          make_noise=False)
+            feed_dict = {X: batch_test_xs,
+                         X_noised: batch_test_noised_xs,
+                         keep_prob: 1.0}
 
-                latent_vars = sess.run(z_generated, feed_dict=feed_dict)
-                latent_holder.append(latent_vars)
-            latent_holder = np.concatenate(latent_holder, axis=0)
-            plot_2d_scatter(latent_holder[:, 0], latent_holder[:, 1], test_ys[:len(latent_holder)])
+            latent_vars = sess.run(z_generated, feed_dict=feed_dict)
+            latent_holder.append(latent_vars)
+        latent_holder = np.concatenate(latent_holder, axis=0)
+        plot_2d_scatter(latent_holder[:, 0], latent_holder[:, 1], test_ys[:len(latent_holder)])
 
     if conf.PMLR is True:
         print("-" * 80)
+        assert conf.n_z == 2, "Error: n_z should be 2"
         print("plot Manifold Learning Result")
-        x_axis = np.linspace(-1, 1, 10)
-        y_axis = np.linspace(-1, 1, 10)
+        x_axis = np.linspace(-0.5, 0.5, 10)
+        y_axis = np.linspace(0.5, -0.5, 10)
         z_holder = []
-        for i, xi in enumerate(x_axis):
-            for j, yi in enumerate(y_axis):
+        for i, yi in enumerate(y_axis):
+            for j, xi in enumerate(x_axis):
                 z_holder.append([xi, yi])
         length = len(z_holder)
-        MLR = sess.run(images_PMLR, feed_dict={z_inputs: z_holder, keep_prob: 1.0})
+        MLR = sess.run(images_PMLR, feed_dict={latent: z_holder, keep_prob: 1.0})
         MLR = np.reshape(MLR, [-1, height, width, channel])
         p_name = "PMLR/PMLR"
         plot_manifold_canvas(MLR, 10, "MNIST", p_name)
@@ -154,10 +208,12 @@ elif conf.mode is "semi_supervised":
 
     X = tf.placeholder(dtype=tf.float32, shape=[None, height, width, channel], name="Input")
     X_noised = tf.placeholder(dtype=tf.float32, shape=[None, height, width, channel], name="Input_noised")
-    Y = tf.placeholder(dtype=tf.float32, shape=[None, n_cls], name="labels")
+    Y = tf.placeholder(dtype=tf.float32, shape=[None, n_cls], name="Input_labels")
     Y_cat = tf.placeholder(dtype=tf.float32, shape=[None, n_cls], name="labels_cat")
-    keep_prob = tf.placeholder(dtype = tf.float32, name="dropout_rate")
-    z_inputs = tf.placeholder(dtype = tf.float32, shape = [None, conf.n_z + n_cls])
+    z_prior_ = tf.placeholder(dtype = tf.float32, shape = [None,conf.n_z], name = "z_prior" )
+    latent = tf.placeholder(dtype = tf.float32, shape = [None, conf.n_z + n_cls], name = "latent_for_generation")
+    keep_prob = tf.placeholder(dtype=tf.float32, name="dropout_rate")
+    lr_ = tf.placeholder(dtype=tf.float32, name="learning_rate")
     global_step = tf.Variable(0, trainable=False)
 
     AAE = AAE(conf, [_, height, width, channel], n_cls)
@@ -166,9 +222,10 @@ elif conf.mode is "semi_supervised":
                                                                                                                          X_noised,
                                                                                                                          Y,
                                                                                                                          Y_cat,
+                                                                                                                         z_prior_,
                                                                                                                          keep_prob)
-    images_PARR = AAE.semi_decoder(z_inputs, keep_prob)
-    images_manifold = AAE.semi_decoder(z_inputs, keep_prob)
+    images_PARR = AAE.semi_decoder(latent, keep_prob)
+    images_manifold = AAE.semi_decoder(latent, keep_prob)
 
     total_batch = Data.get_total_batch(train_xs, conf.batch_size)
 
@@ -178,16 +235,13 @@ elif conf.mode is "semi_supervised":
     var_y_discriminator = [var for var in total_vars if "y_discriminator" in var.name]
     var_generator = [var for var in total_vars if "encoder" in var.name]
 
-    lr_AE = conf.lr_AE
-    lr_D_G = conf.lr_D_G
+    op_AE = tf.train.AdamOptimizer(learning_rate = lr_).minimize(negative_log_likelihood, global_step = global_step, var_list = var_AE)
+    op_y_D = tf.train.AdamOptimizer(learning_rate = lr_/5).minimize(D_loss_y, global_step = global_step, var_list = var_y_discriminator)
+    op_z_D = tf.train.AdamOptimizer(learning_rate = lr_/5).minimize(D_loss_z, global_step = global_step, var_list = var_z_discriminator)
+    op_G = tf.train.AdamOptimizer(learning_rate = lr_).minimize(G_loss, global_step = global_step, var_list = var_generator)
+    op_CE_labels = tf.train.AdamOptimizer(learning_rate = lr_).minimize(CE_labels, global_step = global_step, var_list = var_generator)
 
-    op_AE = AAE.optim_op(negative_log_likelihood, lr_AE, global_step, var_AE)
-    op_y_D = AAE.optim_op(D_loss_y, lr_D_G/5, global_step, var_y_discriminator)
-    op_z_D = AAE.optim_op(D_loss_z, lr_D_G/5, global_step, var_z_discriminator)
-    op_G = AAE.optim_op(G_loss, lr_D_G, global_step, var_generator)
-    op_CE_labels = AAE.optim_op(CE_labels, lr_D_G/5, global_step, var_generator)
-
-    batch_t_xs, batch_tn_xs, batch_t_ys = Data.next_batch(test_xs, test_ys, 100, make_noise = False)
+    batch_t_xs, batch_tn_xs, batch_t_ys = Data.next_batch(valid_xs, valid_ys, 100, make_noise = False)
     Data.initialize_batch()
 
     sess = tf.Session()
@@ -200,19 +254,47 @@ elif conf.mode is "semi_supervised":
         D_y_value = 0
         G_value = 0
         CE_value = 0
+
+        if i <= 50:
+            lr_value = conf.lr_start
+        elif i <= 100:
+            lr_value = conf.lr_mid
+        else:
+            lr_value = conf.lr_end
+
         for j in range(total_batch):
             batch_xs, batch_noised_xs, batch_ys = Data.next_batch(train_xs,
                                                                   train_ys,
                                                                   conf.batch_size,
-                                                                  make_noise = True)
+                                                                  make_noise = conf.noised)
 
             real_cat_labels = np.random.randint(low = 0, high = n_cls, size = conf.batch_size)
             real_cat_labels = np.eye(n_cls)[real_cat_labels]
+
+            if conf.prior is "gaussian":
+                z_prior = gaussian(conf.batch_size,
+                                   n_labels=n_cls,
+                                   n_dim=conf.n_z,
+                                   use_label_info=False)
+
+            elif conf.prior is "gaussian_mixture":
+                z_prior = gaussian_mixture(conf.batch_size,
+                                           n_labels=n_cls,
+                                           n_dim=conf.n_z)
+
+            elif conf.prior is "swiss_roll":
+                z_prior = swiss_roll(conf.batch_size,
+                                     n_labels=n_cls,
+                                     n_dim=conf.n_z)
+            else:
+                print("FLAGS.prior should be [gaussian, gaussian_mixture, swiss_roll]")
 
             feed_dict = {X: batch_xs,
                          X_noised: batch_noised_xs,
                          Y: batch_ys,
                          Y_cat: real_cat_labels,
+                         z_prior_: z_prior,
+                         lr_: lr_value,
                          keep_prob: conf.keep_prob}
 
             # AutoEncoder phase
@@ -230,12 +312,13 @@ elif conf.mode is "semi_supervised":
             batch_semi_xs, batch_noised_semi_xs,batch_semi_ys = Data_semi.next_batch(valid_xs,
                                                                                      valid_ys,
                                                                                      conf.batch_size,
-                                                                                     make_noise = True)
+                                                                                     make_noise = False)
 
             feed_dict = {X: batch_semi_xs,
                          X_noised: batch_noised_semi_xs,
                          Y: batch_semi_ys,
                          Y_cat: real_cat_labels,
+                         lr_:lr_value,
                          keep_prob: conf.keep_prob}
 
             # Cross_Entropy phase
@@ -259,7 +342,7 @@ elif conf.mode is "semi_supervised":
         hour = int((time.time() - start_time) / 3600)
         min = int(((time.time() - start_time) - 3600 * hour) / 60)
         sec = int((time.time() - start_time) - 3600 * hour - 60 * min)
-        print("Epoch: %3d   lr_AE: %.5f   lr_DG: %.5f   Time: %d hour %d min %d sec" % (i, lr_AE, lr_D_G, hour, min, sec))
+        print("Epoch: %3d   lr_AE_G_CE: %.5f   lr_D: %.5f   Time: %d hour %d min %d sec" % (i, lr_value,lr_value/5, hour, min, sec))
         print("loss_AE: %.5f" % (likelihood))
         print("loss_z_D: %.4f   loss_y_D: %f"  % (D_z_value, D_y_value))
         print("loss_G: %.4f   CE_semi: %.4f\n" % (G_value, CE_value))
@@ -269,7 +352,7 @@ elif conf.mode is "semi_supervised":
         print("plot analogical reasoning result")
         z_holder = []
         for i in range(n_cls):
-            z_ = np.random.normal(0, 1, [10, conf.n_z])
+            z_ = np.random.rand(10, conf.n_z)
             z_holder.append(z_)
         z_holder = np.concatenate(z_holder, axis = 0)
         y = [j for j in range(n_cls)]
@@ -279,7 +362,7 @@ elif conf.mode is "semi_supervised":
         y_one_hot[np.arange(length), y] = 1
         y_one_hot = np.reshape(y_one_hot, [-1, n_cls])
         z_concated = np.concatenate([z_holder, y_one_hot], axis=1)
-        PARR = sess.run(images_PARR, feed_dict = {z_inputs: z_concated, keep_prob: 1.0})
+        PARR = sess.run(images_PARR, feed_dict = {latent: z_concated, keep_prob: 1.0})
         PARR = np.reshape(PARR, [-1, height, width, channel])
         p_name = "PARR/Cond_generation"
         plot_manifold_canvas(PARR, 10, "MNIST", p_name)
@@ -308,9 +391,10 @@ elif conf.mode is "semi_supervised":
 
     if conf.PMLR is True:
         print("-"*80)
+        assert conf.n_z == 2, "Error: n_z should be 2"
         print("plot Manifold Learning Results")
-        x_axis = np.linspace(-2,2,10)
-        y_axis = np.linspace(-2,2,10)
+        x_axis = np.linspace(-0.5,0.5,10)
+        y_axis = np.linspace(-0.5,0.5,10)
         z_holder = []
         for i,xi in enumerate(x_axis):
             for j, yi in enumerate(y_axis):
@@ -321,9 +405,11 @@ elif conf.mode is "semi_supervised":
             y_one_hot = np.zeros((length, n_cls))
             y_one_hot[np.arange(length), y] = 1
             y_one_hot = np.reshape(y_one_hot, [-1,n_cls])
-
             z_concated = np.concatenate([z_holder, y_one_hot], axis=1)
-            MLR = sess.run(images_manifold, feed_dict = {z_inputs: z_concated, keep_prob: 1.0})
+            MLR = sess.run(images_manifold, feed_dict = {latent: z_concated, keep_prob: 1.0})
             MLR = np.reshape(MLR, [-1, height, width, channel])
             p_name = "PMLR/labels" +str(k)
             plot_manifold_canvas(MLR, 10, "MNIST", p_name)
+
+if __name__ =='__main__':
+    tf.app.run()

@@ -2,7 +2,10 @@ import numpy as np
 from math import sin,cos,sqrt
 ## this code is borrowed from https://github.com/hwalsuklee/tensorflow-mnist-AAE/
 
+
+
 def gaussian(batch_size, n_labels, n_dim, mean=0, var=1, use_label_info=False):
+    np.random.seed(0)
     if use_label_info:
         if n_dim != 2 or n_labels != 10:
             raise Exception("n_dim must be 2 and n_labels must be 10.")
@@ -38,6 +41,7 @@ def gaussian(batch_size, n_labels, n_dim, mean=0, var=1, use_label_info=False):
         return z
 
 def gaussian_mixture(batch_size, n_labels ,n_dim, x_var=0.5, y_var=0.1, label_indices=None):
+    np.random.seed(0)
     if n_dim != 2:
         raise Exception("n_dim must be 2.")
 
@@ -63,6 +67,7 @@ def gaussian_mixture(batch_size, n_labels ,n_dim, x_var=0.5, y_var=0.1, label_in
     return z
 
 def swiss_roll(batch_size, n_labels, n_dim, label_indices=None):
+    np.random.seed(0)
     if n_dim != 2:
         raise Exception("n_dim must be 2.")
 

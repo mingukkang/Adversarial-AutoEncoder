@@ -182,45 +182,6 @@ class data_pipeline:
 
     def make_noise(self,image):
 
-        '''
-        def salt_pepper_noise(image):
-            size = np.shape(image)
-            output = np.zeros(size, np.float32)
-            for i in range(size[0]):
-                for j in range(size[1]):
-                    if self.type =="MNIST":
-                        rdn = random.random()
-                        if rdn < 0.1:
-                            output[i][j] = 0
-                        elif rdn > 0.9:
-                            output[i][j] = 1
-                        else:
-                            output[i][j] = image[i][j]
-                    else:
-                        rdn = random.random()
-                        if rdn < 0.1:
-                            output[i][i][:] = 0
-                        elif rdn > 0.9:
-                            output[i][j][:] = 1
-                        else:
-                            output[i][j][:] = image[i][j][:]
-            return output
-
-        def zero_masking_noise(image):
-            size = np.shape(image)
-            for i in range(size[0]):
-                for j in range(size[1]):
-                    if self.type == "MNIST":
-                        q = random.random()
-                        if q < 0.50:
-                            image[i][j] = 0
-                    else:
-                        q = random.random()
-                        if q < 0.50:
-                            image[i][j][:] = 0
-            return image
-        '''
-
         def gaussian_noise(image):
             size = np.shape(image)
             noise = np.random.normal(0,0.3, size = size)
