@@ -189,7 +189,14 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, z_prior,
 ## Results
 
 **1. Restoring**
+```
+python main.py --mode "supervised"
 
+or
+
+python main.py --mode "semi_supervised"
+
+```
 <table align='center'>
 <tr align='center'>
 <td> Original Images </td>
