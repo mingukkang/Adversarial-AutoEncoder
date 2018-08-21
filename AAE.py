@@ -6,7 +6,7 @@ from prior import *
 class AAE:
     def __init__(self, conf, shape, n_labels):
         self.conf = conf
-        self.mode = conf.mode
+        self.mode = conf.model
         self.data = conf.data
         self.super_n_hidden = conf.super_n_hidden
         self.semi_n_hidden = conf.semi_n_hidden
