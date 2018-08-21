@@ -7,7 +7,7 @@ from AAE import *
 
 flags = tf.app.flags
 
-flags.DEFINE_string("mode", "semi_supervised", "[supervised | semi_supervised]")
+flags.DEFINE_string("model", "semi_supervised", "[supervised | semi_supervised]")
 flags.DEFINE_string("data", "MNIST", "[MNIST | CIFAR_10]")
 flags.DEFINE_string("prior", "gaussian", "[gaussain | gaussain_mixture | swiss_roll]")
 
@@ -30,7 +30,7 @@ flags.DEFINE_bool("PARR", True, "Boolean for plot analogical reasoning result")
 
 conf = flags.FLAGS
 
-if conf.mode is "supervised":
+if conf.model is "supervised":
 
     data_pipeline = data_pipeline(conf.data)
 
@@ -196,7 +196,7 @@ if conf.mode is "supervised":
         p_name = "PMLR/PMLR"
         plot_manifold_canvas(MLR, 10, "MNIST", p_name)
 
-elif conf.mode is "semi_supervised":
+elif conf.model is "semi_supervised":
 
     Data = data_pipeline(conf.data)
     Data_semi = data_pipeline(conf.data)
