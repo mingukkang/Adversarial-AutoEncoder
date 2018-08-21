@@ -190,11 +190,11 @@ def Semi_Adversarial_AutoEncoder(self, X, X_noised, labels, labels_cat, z_prior,
 
 **1. Restoring**
 ```
-python main.py --mode "supervised" --prior "gaussian" --n_z 20
+python main.py --model supervised --prior gaussian --n_z 20
 
 or
 
-python main.py --mode "semi_supervised" --prior "gaussian" --n_z 20
+python main.py --model semi_supervised --prior gaussian --n_z 20
 ```
 <table align='center'>
 <tr align='center'>
@@ -230,7 +230,7 @@ python main.py --mode "semi_supervised" --prior "gaussian" --n_z 20
 ```
 Test was performed using 10,000 number of test dataset not used for learning.
 
-python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2
+python main.py --model supervised --prior gaussian_mixture --n_z 2
 ```
 
 <table align='center'>
@@ -252,7 +252,7 @@ python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2
 ***Supervised AAE***
 
 ```
-python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2 --PMLR True
+python main.py --model supervised --prior gaussian_mixture --n_z 2 --PMLR True
 ```
 
 <table align='center'>
@@ -267,7 +267,7 @@ python main.py --mode "supervised" --prior "gaussian_mixture" --n_z 2 --PMLR Tru
 ***SemiSupervised AAE***
 
 ```
-python main.py --mode "semi_supervised" --prior "gaussian" --n_z 2 --PMLR True
+python main.py --model semi_supervised --prior gaussian --n_z 2 --PMLR True
 
 <My own opinion>
 The results suggest that when n_z is 2, SemiSupervised AAE can't extract label information from Input image very well.
@@ -289,7 +289,7 @@ The results suggest that when n_z is 2, SemiSupervised AAE can't extract label i
 **4. Conditional Genration**
 
 ```
-python main.py --mode "semi_supervised" --prior "gaussian" --n_z 20 --PARR True
+python main.py --model semi_supervised --prior gaussian --n_z 20 --PARR True --PMLR False
 ```
 
 <table align='center'>
