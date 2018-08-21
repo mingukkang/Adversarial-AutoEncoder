@@ -39,3 +39,40 @@ def dense(inputs, units, name):
                           name = name,
                           kernel_initializer = initializer)
     return net
+
+user_flags = []
+
+def DEFINE_string(name, default_value, doc_string):
+    tf.app.flags.DEFINE_string(name, default_value, doc_string)
+    global user_flags
+    user_flags.append(name)
+
+def DEFINE_integer(name, default_value, doc_string):
+    tf.app.flags.DEFINE_integer(name, default_value, doc_string)
+    global user_flags
+    user_flags.append(name)
+
+def DEFINE_float(name, defualt_value, doc_string):
+    tf.app.flags.DEFINE_float(name, defualt_value, doc_string)
+    global user_flags
+    user_flags.append(name)
+
+def DEFINE_boolean(name, default_value, doc_string):
+    tf.app.flags.DEFINE_boolean(name, default_value, doc_string)
+    global user_flags
+    user_flags.append(name)
+
+def print_user_flags(line_limit = 100):
+    print("-" * 80)
+
+    global user_flags
+    FLAGS = tf.app.flags.FLAGS
+
+    for flag_name in sorted(user_flags):
+        value = "{}".format(getattr(FLAGS, flag_name))
+        log_string = flag_name
+        log_string += "." * (line_limit - len(flag_name) - len(value))
+        log_string += value
+        print(log_string)
+
+    return FLAGS

@@ -25,7 +25,7 @@ def plot_manifold_canvas(images, n, type, name):
     x = np.linspace(-2, 2, n)
     y = np.linspace(-2, 2, n)
 
-    if type is "MNIST":
+    if type == "MNIST":
         canvas = np.empty((n * height, n * height))
         for i, yi in enumerate(x):
             for j, xi in enumerate(y):

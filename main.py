@@ -4,33 +4,33 @@ import time
 from utils import *
 from plot import *
 from AAE import *
+from data_utils import *
 
-flags = tf.app.flags
-
-flags.DEFINE_string("model", "semi_supervised", "[supervised | semi_supervised]")
-flags.DEFINE_string("data", "MNIST", "[MNIST | CIFAR_10]")
-flags.DEFINE_string("prior", "gaussian", "[gaussain | gaussain_mixture | swiss_roll]")
+DEFINE_string("model", "semi_supervised", "[supervised | semi_supervised]")
+DEFINE_string("data", "MNIST", "[MNIST | CIFAR_10]")
+DEFINE_string("prior", "gaussian", "[gaussain | gaussain_mixture | swiss_roll]")
 
 
-flags.DEFINE_integer("super_n_hidden", 3000, "the number of elements for hidden layers")
-flags.DEFINE_integer("semi_n_hidden", 3000, "teh number of elements for hidden layers")
-flags.DEFINE_integer("n_epoch", 150, "number of Epoch for training")
-flags.DEFINE_integer("n_z", 2, "Dimension of Latent variables")
-flags.DEFINE_integer("num_samples",5000, "number of samples for semi supervised learning")
-flags.DEFINE_integer("batch_size", 128, "Batch Size for training")
+DEFINE_integer("super_n_hidden", 3000, "the number of elements for hidden layers")
+DEFINE_integer("semi_n_hidden", 3000, "teh number of elements for hidden layers")
+DEFINE_integer("n_epoch", 100, "number of Epoch for training")
+DEFINE_integer("n_z", 20, "Dimension of Latent variables")
+DEFINE_integer("num_samples",5000, "number of samples for semi supervised learning")
+DEFINE_integer("batch_size", 128, "Batch Size for training")
 
-flags.DEFINE_float("keep_prob", 0.9, "dropout rate")
-flags.DEFINE_float("lr_start", 0.001, "initial learning rate")
-flags.DEFINE_float("lr_mid", 0.0005, "mid learning rate")
-flags.DEFINE_float("lr_end", 0.0001, "final learning rate")
+DEFINE_float("keep_prob", 0.9, "dropout rate")
+DEFINE_float("lr_start", 0.001, "initial learning rate")
+DEFINE_float("lr_mid", 0.0001, "mid learning rate")
+DEFINE_float("lr_end", 0.0001, "final learning rate")
 
-flags.DEFINE_bool("noised", True, "")
-flags.DEFINE_bool("PMLR", True, "Boolean for plot manifold learning result")
-flags.DEFINE_bool("PARR", True, "Boolean for plot analogical reasoning result")
+DEFINE_boolean("noised", True, "")
+DEFINE_boolean("PMLR", True, "Boolean for plot manifold learning result")
+DEFINE_boolean("PARR", False, "Boolean for plot analogical reasoning result")
 
-conf = flags.FLAGS
+conf = print_user_flags(line_limit = 100)
+print("-"*80)
 
-if conf.model is "supervised":
+if conf.model == "supervised":
 
     data_pipeline = data_pipeline(conf.data)
 
@@ -91,14 +91,14 @@ if conf.model is "supervised":
                                                                            train_ys,
                                                                            conf.batch_size,
                                                                            make_noise=conf.noised)
-            if conf.prior is "gaussian":
+            if conf.prior == "gaussian":
                 z_prior_, z_id_ = gaussian(conf.batch_size,
                                          n_labels = n_cls,
                                          n_dim = conf.n_z,
                                          use_label_info = True)
                 z_id_onehot = np.eye(n_cls)[z_id_].astype(np.float32)
 
-            elif conf.prior is "gaussian_mixture":
+            elif conf.prior == "gaussian_mixture":
                 z_id_ = np.random.randint(0, n_cls, size=[conf.batch_size])
                 z_id_onehot = np.eye(n_cls)[z_id_].astype(np.float32)
                 z_prior_ = gaussian_mixture(conf.batch_size,
@@ -106,7 +106,7 @@ if conf.model is "supervised":
                                            n_dim = conf.n_z,
                                            label_indices = z_id_)
 
-            elif conf.prior is "swiss_roll":
+            elif conf.prior == "swiss_roll":
                 z_id_ = np.random.randint(0, n_cls, size=[conf.batch_size])
                 z_id_onehot = np.eye(n_cls)[z_id_].astype(np.float32)
                 z_prior_ = swiss_roll(conf.batch_size,
@@ -196,7 +196,7 @@ if conf.model is "supervised":
         p_name = "PMLR/PMLR"
         plot_manifold_canvas(MLR, 10, "MNIST", p_name)
 
-elif conf.model is "semi_supervised":
+elif conf.model == "semi_supervised":
 
     Data = data_pipeline(conf.data)
     Data_semi = data_pipeline(conf.data)
@@ -271,18 +271,18 @@ elif conf.model is "semi_supervised":
             real_cat_labels = np.random.randint(low = 0, high = n_cls, size = conf.batch_size)
             real_cat_labels = np.eye(n_cls)[real_cat_labels]
 
-            if conf.prior is "gaussian":
+            if conf.prior == "gaussian":
                 z_prior = gaussian(conf.batch_size,
                                    n_labels=n_cls,
                                    n_dim=conf.n_z,
                                    use_label_info=False)
 
-            elif conf.prior is "gaussian_mixture":
+            elif conf.prior == "gaussian_mixture":
                 z_prior = gaussian_mixture(conf.batch_size,
                                            n_labels=n_cls,
                                            n_dim=conf.n_z)
 
-            elif conf.prior is "swiss_roll":
+            elif conf.prior == "swiss_roll":
                 z_prior = swiss_roll(conf.batch_size,
                                      n_labels=n_cls,
                                      n_dim=conf.n_z)

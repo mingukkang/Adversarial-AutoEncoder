@@ -14,7 +14,7 @@ class data_pipeline:
         self.debug = 0
         self.batch = 0
 
-        if self.type is "MNIST":
+        if self.type == "MNIST":
             self.url = "http://yann.lecun.com/exdb/mnist/"
             self.debug =1
             self.n_train_images = 60000
@@ -26,7 +26,7 @@ class data_pipeline:
                               "t10k-images-idx3-ubyte.gz",
                               "t10k-labels-idx1-ubyte.gz"]
 
-        elif self.type is "CIFAR_10":
+        elif self.type == "CIFAR_10":
             self.url = "https://www.cs.toronto.edu/~kriz/"
             self.debug = 1
             self.n_train_images = 50000
@@ -54,13 +54,13 @@ class data_pipeline:
         if not tf.gfile.Exists("./Data"):
             tf.gfile.MakeDirs("./Data")
 
-        if self.type is "MNIST":
+        if self.type == "MNIST":
             for i in self.MNIST_filename:
                 filepath = os.path.join("./Data", i)
                 self.maybe_download(i,filepath)
                 self.filepath_holder.append(filepath)
 
-        elif self.type is "CIFAR_10":
+        elif self.type == "CIFAR_10":
             for i in self.CIFAR_10_filename:
                 filepath = os.path.join("./Data", i)
                 self.maybe_download(i,filepath)
@@ -144,7 +144,7 @@ class data_pipeline:
 
     def load_preprocess_data(self):
         self.download_data()
-        if self.type is "MNIST":
+        if self.type == "MNIST":
             train_images = self.extract_mnist_images(self.filepath_holder[0],self.size, self.n_train_images, self.n_channels)
             train_labels = self.extract_mnist_labels(self.filepath_holder[1], self.n_train_images)
             self.valid_images = train_images[0:5000,:,:,:]
