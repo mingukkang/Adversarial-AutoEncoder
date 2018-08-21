@@ -286,21 +286,6 @@ The results suggest that when n_z is 2, SemiSupervised AAE can't extract label i
 </tr>
 </table>
 
-**4. Conditional Genration**
-
-```
-python main.py --model semi_supervised --prior gaussian --n_z 20 --PARR True --PMLR False
-```
-
-<table align='center'>
-<tr align='center'>
-<td> Analogical reasoning with random z_vectors </td>
-</tr>
-<tr>
-<td><img src = 'Image/.png' height = '250px'>
-</tr>
-</table>
-
 ## Reference
 
 ### Paper
